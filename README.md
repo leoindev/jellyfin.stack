@@ -11,7 +11,7 @@ Documento para guardar como foi feito a stack do Jellyfin/Arr.
 ## Criar pastas e dar as permissões
 
 ```bash
-mkdir -p ./data/{torrents/{tv,movies,music},media/{tv,movies,music}}
+mkdir -p ./data/{torrents/{tv,movies,music},media/{tv,movies,music}},downloads/{tmp}}
 apt install tree
 tree ./data
 chown -R 1000:1000 ./data
@@ -218,4 +218,4 @@ docker compose up -d
 
 <hr />
 
-`Pirataria é crime`
+`Pirataria, é crime?`
