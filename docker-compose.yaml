@@ -49,6 +49,17 @@ services:
       interval: 15s
       retries: 3
 
+  dozzle:
+    <<: *common-keys
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    restart: unless-stopped
+    init: true
+    ports:
+      - 8080:8080/tcp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   gluetun:
     <<: *common-keys
     env_file:
@@ -65,7 +76,6 @@ services:
       - 8686:8686   # Lidarr
       - 6767:6767   # Bazarr
       - 9696:9696   # Prowlarr
-      - 3001:3001   # Aurral
     cap_add:
       - NET_ADMIN
     devices:
@@ -161,6 +171,11 @@ services:
     volumes:
       - ./bazarr/config:/config
       - ./data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6767/"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
 
   lidarr:
     <<: *common-keys
@@ -173,6 +188,11 @@ services:
     volumes:
       - ./lidarr:/config
       - ./data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8686/"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
 
   flaresolverr:
     <<: *common-keys
@@ -182,16 +202,3 @@ services:
     restart: unless-stopped
     depends_on:
       - gluetun
-
-  # aurral:
-  #   <<: *common-keys
-  #   image: ghcr.io/lklynet/aurral:latest
-  #   container_name: aurral
-  #   network_mode: "service:gluetun"
-  #   depends_on:
-  #     - gluetun
-  #   environment:
-  #     - DOWNLOAD_FOLDER=/downloads/tmp
-  #   volumes:
-  #     - ./aurral/config:/config
-  #     - ./data/downloads:/downloads
